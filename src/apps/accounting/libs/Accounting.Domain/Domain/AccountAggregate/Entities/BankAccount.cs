@@ -11,31 +11,31 @@ using System.Transactions;
 
 namespace Accounting.Domain.Domain.AccountAggregate.Entities
 {
-  public class CustomerAccount:AggregateRoot
+  public class BankAccount:AggregateRoot
   {
     public string Id { get; init; }
     public string AccountNumber { get; private set; }
     public string CustomerId { get; private set; }
     public Money Balance { get; private set; }
 
-    private List<CustomerAccountTransaction> _transactions = new();
-    public IReadOnlyCollection<CustomerAccountTransaction> Transactions => _transactions.AsReadOnly();
+    private List<BankAccountTransaction> _transactions = new();
+    public IReadOnlyCollection<BankAccountTransaction> Transactions => _transactions.AsReadOnly();
 
-    public CustomerAccount(string accountNumber, string customerId)
+    public BankAccount(string accountNumber, string customerId)
     {
       Id = Guid.NewGuid().ToString();
       AccountNumber = accountNumber;
       CustomerId = customerId;
-      Balance = new Money(0, "TL");
+      Balance = new Money(0, "TL"); // Hesap ilk açılışta Balance 0 olur.
     }
 
-    public void Deposit(Money money, TransferChannel transferChannel)
+    public void IncomingTransfer(Money money, MoneyTransferChannel transferChannel)
     {
       // DomainEvent
 
       Balance += money;
 
-      _transactions.Add(new CustomerAccountTransaction(Id, money, CustomerAccountTransactionType.Deposit));
+      _transactions.Add(new BankAccountTransaction(Id, money, BankAccountTransactionType.IncomingTransfer,transferChannel));
     }
 
   }

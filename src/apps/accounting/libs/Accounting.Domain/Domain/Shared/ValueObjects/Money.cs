@@ -9,7 +9,7 @@ namespace Accounting.Domain.Domain.Shared.ValueObjects
 {
   public class Money : ValueObject
   {
-    public decimal Amount { get; private set; }
+    public decimal Value { get; set; }
     public string Currency { get; private set; }
 
     public Money(decimal amount, string currency)
@@ -17,22 +17,23 @@ namespace Accounting.Domain.Domain.Shared.ValueObjects
       ArgumentNullException.ThrowIfNull(amount);
       ArgumentNullException.ThrowIfNull(currency);
 
-      Amount = amount;
+      Value = amount;
       Currency = currency;
     }
+
 
     public static bool operator <(Money obj1, Money obj2)
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return obj1.Amount < obj2.Amount;
+      return obj1.Value < obj2.Value;
     }
 
     public static bool operator <=(Money obj1, Money obj2)
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return obj1.Amount <= obj2.Amount;
+      return obj1.Value <= obj2.Value;
     }
 
 
@@ -41,21 +42,21 @@ namespace Accounting.Domain.Domain.Shared.ValueObjects
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return obj1.Amount >= obj2.Amount;
+      return obj1.Value >= obj2.Value;
     }
 
     public static bool operator >(Money obj1, Money obj2)
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return obj1.Amount > obj2.Amount;
+      return obj1.Value > obj2.Value;
     }
 
     public static Money operator +(Money obj1, Money obj2)
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return new Money(obj1.Amount + obj2.Amount, obj1.Currency);
+      return new Money(obj1.Value + obj2.Value, obj1.Currency);
     }
 
 
@@ -63,12 +64,12 @@ namespace Accounting.Domain.Domain.Shared.ValueObjects
     {
       ThrowIfCurrencyIsNotMatch(obj1, obj2);
 
-      return new Money(obj1.Amount - obj2.Amount, obj1.Currency);
+      return new Money(obj1.Value - obj2.Value, obj1.Currency);
     }
 
     private static void ThrowIfCurrencyIsNotMatch(Money obj1, Money obj2)
     {
-      if (obj1.Currency != obj2.Currency) throw new CurrencyIsNotMatch();
+      if (obj1.Currency != obj2.Currency) throw new Exception("Currency Is Not Match");
     }
 
     public static Money Zero(string currency)
@@ -76,12 +77,12 @@ namespace Accounting.Domain.Domain.Shared.ValueObjects
       return new Money(0, currency);
     }
 
-    public override string ToString() => $"{Amount}{Currency}";
+    public override string ToString() => $"{Value}{Currency}";
 
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-      yield return Math.Round(Amount, 8);
+      yield return Math.Round(Value, 8);
       yield return Currency.Trim();
     }
   }

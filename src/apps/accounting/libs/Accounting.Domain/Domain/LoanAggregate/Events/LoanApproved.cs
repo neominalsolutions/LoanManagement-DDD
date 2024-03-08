@@ -10,16 +10,20 @@ namespace Accounting.Domain.Domain.CreditAggregate.Events
 {
   public class LoanApproved : INotification
   {
-    public LoanApproved(string loanId, string customerId, Money limit)
+    public LoanApproved(string loanId, string customerId, Money loanAmount, int term, double bankRate)
     {
-      LoanId = loanId;
+      LoanApplicationId = loanId;
       CustomerId = customerId;
-      Limit = limit;
+      LoanAmount = loanAmount;
     }
 
-    public string LoanId { get;  init; }
+    public string LoanApplicationId { get;  init; }
     public string CustomerId { get; init; }
-    public Money Limit { get; init; } // Toplam Kredi Limiti
+    public Money LoanAmount { get; init; } // Toplam Kredi Limiti
+
+    public int  Term { get; init; }
+
+    public double BankRate { get; init; }
 
 
   }

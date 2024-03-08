@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Accounting.Domain.Domain.CreditAggregate.Entities
 {
-    public class CustomerLoanDebt : Entity<string>
+    public class LoanDebt : Entity<string>
     {
-        public CustomerLoanDebt()
+        public LoanDebt()
         {
             Id = Guid.NewGuid().ToString();
         }

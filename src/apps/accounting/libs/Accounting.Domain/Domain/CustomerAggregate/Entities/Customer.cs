@@ -14,7 +14,7 @@ namespace Accounting.Domain.Domain.CustomerAggregate.Entities
     public string SurName { get; set; }
 
     // Müşterinin kredileri
-    public IReadOnlyCollection<CustomerLoan> Loans { get; set; }
+    public IReadOnlyCollection<Loan> Loans { get; set; }
 
     public Customer()
     {
