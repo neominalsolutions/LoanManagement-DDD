@@ -1,6 +1,9 @@
 ﻿using Finance.Domain.Aggregates.AccountAggregate.Entities;
 using Finance.Domain.Aggregates.CustomerAggregate.Entities;
 using Finance.Domain.Aggregates.LoanAggregate.Entities;
+using Finance.Infra.EF.Configurations.BankAccountAggregate;
+using Finance.Infra.EF.Configurations.CustomerAggregate;
+using Finance.Infra.EF.Configurations.LoanAggregate;
 using Finance.Infra.MediaTR;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +28,19 @@ namespace Finance.Infra.EF.Contexts
     public FinanceContext(DbContextOptions<FinanceContext> opt, IMediator mediator):base(opt)
     {
       this.mediator = mediator;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.ApplyConfiguration(new BankAccountConfig());
+      modelBuilder.ApplyConfiguration(new BankAccountTransactionConfig());
+      modelBuilder.ApplyConfiguration(new CustomerConfig());
+      modelBuilder.ApplyConfiguration(new LoanApplicationConfig());
+      modelBuilder.ApplyConfiguration(new LoanConfig());
+      modelBuilder.ApplyConfiguration(new LoanDebtConfig());
+
+
+      base.OnModelCreating(modelBuilder);
     }
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

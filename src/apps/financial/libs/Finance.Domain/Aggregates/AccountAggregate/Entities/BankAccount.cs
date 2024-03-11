@@ -21,6 +21,11 @@ namespace Finance.Domain.Aggregates.AccountAggregate.Entities
     private List<BankAccountTransaction> _transactions = new();
     public IReadOnlyCollection<BankAccountTransaction> Transactions => _transactions.AsReadOnly();
 
+    public BankAccount()
+    {
+
+    }
+
     public BankAccount(string accountNumber, string customerId)
     {
       Id = Guid.NewGuid().ToString();

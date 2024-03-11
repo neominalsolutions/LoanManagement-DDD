@@ -28,22 +28,22 @@ namespace Finance.Domain.Aggregates.LoanAggregate.Entities
 
     public string LoanAccountNumber { get; private set; } // Kredinin Kullanıldığı hesap Numarası
 
-    public string LoanApplicationId { get; set; }
 
-    private List<LoanDebt> _creditDebts = new List<LoanDebt>();
-    public IReadOnlyCollection<LoanDebt> CreditDebts => _creditDebts;
+    private List<LoanDebt> _debts = new List<LoanDebt>();
+    public IReadOnlyCollection<LoanDebt> Debts => _debts;
+
 
     public bool Closed { get; private set; } // Kredi Kapandı mı?
 
 
     public Loan(string loanApplicationId,Money principalAmount, string customerId, int term, double bankRate)
     {
-      Id = Guid.NewGuid().ToString();
-      LoanApplicationId = loanApplicationId;
+      Id = loanApplicationId;
       PrincipalAmount = principalAmount;
       CustomerId = customerId;
       ExpiryDate = DateTime.Now.AddMonths(term);
       RemainingAmount = CalculateLoanInterest();
+      BankRate = bankRate;
     }
 
     // Kredi faizi hesapla
@@ -61,7 +61,7 @@ namespace Finance.Domain.Aggregates.LoanAggregate.Entities
 
       for (int i = 0; i < Term; i++)
       {
-        _creditDebts.Add(new LoanDebt
+        _debts.Add(new LoanDebt
         {
           DueDate = DateTime.Now.AddMonths(i + 1),
           Paid = false,
@@ -84,7 +84,7 @@ namespace Finance.Domain.Aggregates.LoanAggregate.Entities
     public void MakePayment(Money PayableAmount)
     {
   
-      var loanDebt = _creditDebts.OrderBy(x => x.PaidDate).FirstOrDefault(x => x.Paid != false);
+      var loanDebt = _debts.OrderBy(x => x.PaidDate).FirstOrDefault(x => x.Paid != false);
 
       if(loanDebt is not null)
       {

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Finance.Domain.Aggregates.LoanAggregate.Entities
 {
     // Kredi başvurusu
-    public class LoanApplication:AggregateRoot
+  public class LoanApplication:AggregateRoot
   {
     public Money LoanAmount { get; private set; } // İstenen Kredi Tutarı
     public DateTime CreatedAt { get; init; }
@@ -30,6 +30,11 @@ namespace Finance.Domain.Aggregates.LoanAggregate.Entities
 
     public double BankRate { get; private set; } // Banka Faiz oranı
 
+
+    public LoanApplication()
+    {
+
+    }
     public LoanApplication(string customerId,Money loanAmount, Money annualIncome, LoanApplicationType loanType , int term)
     {
       Id = Guid.NewGuid().ToString();

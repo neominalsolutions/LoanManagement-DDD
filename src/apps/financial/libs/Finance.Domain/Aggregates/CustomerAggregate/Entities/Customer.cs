@@ -1,4 +1,5 @@
 ﻿using Domain.Core.Contracts;
+using Finance.Domain.Aggregates.AccountAggregate.Entities;
 using Finance.Domain.Aggregates.LoanAggregate.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace Finance.Domain.Aggregates.CustomerAggregate.Entities
 
     // Müşterinin kredileri
     public IReadOnlyCollection<Loan> Loans { get; set; }
+    public IReadOnlyCollection<BankAccount> Accounts { get; set; }
+
 
     public Customer()
     {

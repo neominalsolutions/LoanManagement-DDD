@@ -13,6 +13,11 @@ namespace Finance.Domain.Shared.ValueObjects
         public decimal Value { get; set; }
         public string Currency { get; private set; }
 
+      public Money()
+      {
+
+      }
+
         public Money(decimal amount, string currency)
         {
             ArgumentNullException.ThrowIfNull(amount);
