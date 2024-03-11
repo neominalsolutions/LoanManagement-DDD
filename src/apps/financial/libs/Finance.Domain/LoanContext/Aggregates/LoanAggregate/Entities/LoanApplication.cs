@@ -18,7 +18,7 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities
     {
         public Money LoanAmount { get; private set; } // İstenen Kredi Tutarı
         public DateTime CreatedAt { get; init; }
-        public string LoadCustomerId { get; private set; } // Kredi başvurusu yapan müşteri
+        public string LoanCustomerId { get; private set; } // Kredi başvurusu yapan müşteri
 
         public Money AnnualIncome { get; private set; } // Yıllık Kazanç
 
@@ -39,7 +39,7 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities
         {
             Id = Guid.NewGuid().ToString();
             CreatedAt = DateTime.Now;
-            LoadCustomerId = customerId;
+            LoanCustomerId = customerId;
             LoanAmount = loanAmount;
             AnnualIncome = annualIncome;
             LoanType = loanType;
@@ -80,9 +80,10 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities
             else
             {
                 // Kredi onaylanınca direk kredi kullanımı yapılsın
-                // farklı bir aggregate root'a gideceğimizden loan approved eventi fırlatacağız.
-                var @event = new LoanApproved(Id, LoadCustomerId, LoanAmount, Term, BankRate);
+                // farklı bir bounded context'e gideceğimizden loan approved eventi fırlatacağız.
+                var @event = new LoanApproved(this);
                 AddDomainEvent(@event);
+
             }
 
         }

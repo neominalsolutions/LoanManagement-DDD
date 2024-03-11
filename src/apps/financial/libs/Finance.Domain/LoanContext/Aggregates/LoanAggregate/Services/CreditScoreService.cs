@@ -9,43 +9,46 @@ using System.Threading.Tasks;
 
 namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Services
 {
-    /// <summary>
-    /// Müşterinin Kredis Score hesaplayan Domain Service
-    /// </summary>
-    public class CreditScoreService
+  /// <summary>
+  /// Müşterinin Kredis Score hesaplayan Domain Service
+  /// </summary>
+  public class CreditScoreService
+  {
+    private readonly ILoanRepository loanRepository;
+    private readonly ILoanCustomerRepository loanCustomerRepository;
+
+    public CreditScoreService(ILoanRepository loanRepository, ILoanCustomerRepository loanCustomerRepository)
     {
-        private readonly ILoanRepository loanRepository;
+      this.loanRepository = loanRepository;
+      this.loanCustomerRepository = loanCustomerRepository;
+    }
 
-        public CreditScoreService(ILoanRepository loanRepository)
-        {
-            this.loanRepository = loanRepository;
-        }
+    public bool IsApproved(LoanApplication loanApplication)
+    {
+     
+      var loanCustomer = loanCustomerRepository.FindById(loanApplication.LoanCustomerId);
 
-        public bool IsApproved(LoanApplication loanApplication)
-        {
-            // burada kredi not hesaplama yapılacak eğer 700 altında kalırsa kredi onay verilmeyecek
+      decimal debtToIncomeRatio = loanApplication.LoanAmount.Value / loanCustomer.AnnualIncome.Value;
 
-            decimal debtToIncomeRatio = loanApplication.LoanAmount.Value / loanApplication.AnnualIncome.Value;
+      var customerLoans = loanRepository.Find(x => x.LoanCustomerId == loanApplication.LoanCustomerId && x.Closed == false).ToList();
 
-            var customerLoans = loanRepository.Find(x => x.LoanCustomerId == loanApplication.LoadCustomerId && x.Closed == false).ToList();
+      Money totalDebt = Money.Zero(loanApplication.LoanAmount.Currency);
 
-            Money totalDebt = Money.Zero(loanApplication.LoanAmount.Currency);
+      customerLoans.ForEach(loan =>
+      {
+        totalDebt.Value += loan.RemainingAmount.Value;
+      });
 
-            customerLoans.ForEach(loan =>
-            {
-                totalDebt.Value += loan.RemainingAmount.Value;
-            });
-
-            decimal debtWeight = 0.30m; // borç ağırlığı
-            decimal incomeWeight = 0.40m; // yıllık gelir ağırlığı
-            decimal loanApplicationsWeight = 0.30m; // Daha önceden kredi kullanım ağırlığı
+      decimal debtWeight = 0.30m; // borç ağırlığı
+      decimal incomeWeight = 0.40m; // yıllık gelir ağırlığı
+      decimal loanApplicationsWeight = 0.30m; // Daha önceden kredi kullanım ağırlığı
 
 
-            var maxPayableAmount = loanApplication.AnnualIncome.Value * incomeWeight - totalDebt.Value * debtWeight - customerLoans.Count() * loanApplicationsWeight;
+      var maxPayableAmount = loanApplication.AnnualIncome.Value * incomeWeight - totalDebt.Value * debtWeight - customerLoans.Count() * loanApplicationsWeight;
 
-            return loanApplication.LoanAmount.Value > maxPayableAmount;
-
-        }
+      return loanApplication.LoanAmount.Value < maxPayableAmount;
 
     }
+
+  }
 }

@@ -17,7 +17,7 @@ namespace Finance.Domain.BankingContext.Aggregates.AccountAggregate.Entities
     public string AccountOwnerId { get; private set; }
     public Money Balance { get; private set; }
 
-    public string CloseReason { get; private set; }
+    public string? CloseReason { get; private set; }
 
     public bool Closed { get; set; }
 

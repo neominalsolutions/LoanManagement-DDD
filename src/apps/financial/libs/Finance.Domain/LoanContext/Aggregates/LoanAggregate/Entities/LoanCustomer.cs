@@ -28,6 +28,11 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities
       Id = customerId; 
     }
 
+    public void SetAnnualIncome(Money annualIncome)
+    {
+      AnnualIncome = annualIncome;
+    }
+
 
 
   }

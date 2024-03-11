@@ -8,7 +8,6 @@ namespace Infra.Core.Contracts
 {
   public interface IUnitOfWork
   {
-    void AutoSave(); // Transaction uygula
     void Save();
   }
 }

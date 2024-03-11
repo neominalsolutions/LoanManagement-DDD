@@ -18,7 +18,6 @@ namespace Finance.Domain.AccountContext.Aggregates.OwnerAggregate.Entities
   {
     private List<Account> _accounts = new List<Account>();
     public IReadOnlyCollection<Account> Accounts => _accounts;
-    public string CustomerId { get; set; }
 
     public AccountType AccountType { get; private set; }
 
@@ -27,18 +26,22 @@ namespace Finance.Domain.AccountContext.Aggregates.OwnerAggregate.Entities
 
     }
 
-    public AccountOwner(string CustomerId, AccountType accountType)
+    public AccountOwner(string customerId, AccountType accountType)
     {
-      Id = CustomerId;
+      Id = customerId;
       AccountType = accountType;
     }
 
-    public void OpenAccount(string accountNumber)
+    public Account OpenAccount(string accountNumber)
     {
       // Domain Event Fırlatalım
-      var @event = new AccountOpened(accountNumber, CustomerId);
-      AddDomainEvent(@event);
+      var account = new Account(accountNumber, Id);
+      _accounts.Add(account);
+      //var @event = new AccountOpened(accountNumber, Id);
+      //AddDomainEvent(@event);
       // AccountOwner Aggregate'den Account Aggregate geçiş yapacağız.
+
+      return account;
     }
 
     public void CloseAccount(string accountNumber, string closeReason)

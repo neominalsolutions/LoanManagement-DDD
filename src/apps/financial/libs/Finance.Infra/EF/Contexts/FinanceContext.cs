@@ -50,12 +50,13 @@ namespace Finance.Infra.EF.Contexts
       base.OnModelCreating(modelBuilder);
     }
 
-    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    public override int SaveChanges()
     {
+      this.mediator.DispatchDomainEventsAsync(this).GetAwaiter().GetResult();
 
-      await this.mediator.DispatchDomainEventsAsync(this);
-
-      return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+      return base.SaveChanges();
     }
+
+   
   }
 }
