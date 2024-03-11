@@ -45,4 +45,4 @@ namespace Domain.Core.Contracts
     // Other utility methods
   }
 }
-}
+
