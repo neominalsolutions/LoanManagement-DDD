@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Accounting.Domain.Domain.AccountAggregate.Enumarations
+namespace Finance.Domain.Aggregates.AccountAggregate.Enumarations
 {
 
 

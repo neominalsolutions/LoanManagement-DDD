@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Finance.Domain.Aggregates.CreditAggregate.Entities
+namespace Finance.Domain.Aggregates.LoanAggregate.Entities
 {
     public class Loan : AggregateRoot
   {
