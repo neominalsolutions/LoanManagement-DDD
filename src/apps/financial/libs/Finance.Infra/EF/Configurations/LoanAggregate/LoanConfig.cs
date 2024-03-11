@@ -1,4 +1,4 @@
-﻿using Finance.Domain.Aggregates.LoanAggregate.Entities;
+﻿using Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Finance.Infra.EF.Configurations.LoanAggregate
 {
-  public class LoanConfig : IEntityTypeConfiguration<Loan>
+    public class LoanConfig : IEntityTypeConfiguration<Loan>
   {
     public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Loan> builder)
     {
+      builder.ToTable("Loan", "LoanContext");
       builder.HasMany(x => x.Debts);
-      builder.HasOne(x => x.LoanApplication).WithOne().HasForeignKey("Id");
       // Value Object Mapping yaptık
       builder.OwnsOne(x => x.PrincipalAmount).Property(x => x.Value).HasColumnName("Principle_Amount");
       builder.OwnsOne(x => x.PrincipalAmount).Property(x => x.Currency).HasColumnName("Principle_Currency");

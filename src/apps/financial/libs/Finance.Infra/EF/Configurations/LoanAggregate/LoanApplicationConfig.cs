@@ -1,4 +1,4 @@
-﻿using Finance.Domain.Aggregates.LoanAggregate.Entities;
+﻿using Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Finance.Infra.EF.Configurations.LoanAggregate
 {
-  public class LoanApplicationConfig : IEntityTypeConfiguration<LoanApplication>
+    public class LoanApplicationConfig : IEntityTypeConfiguration<LoanApplication>
   {
     public void Configure(EntityTypeBuilder<LoanApplication> builder)
     {
+      builder.ToTable("LoanApplication", "LoanContext");
       // Enumarationları ve ValueObjectleri doğru bir şekilde mapliyoruz
       builder.OwnsOne(x => x.LoanType).Property(x => x.Id).HasColumnName("Loan_Type");
       builder.OwnsOne(x => x.AnnualIncome).Property(x => x.Value).HasColumnName("AnnoulIncome_Amount");

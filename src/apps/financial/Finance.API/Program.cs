@@ -1,4 +1,4 @@
-using Finance.Domain.Aggregates.CustomerAggregate.Entities;
+using Finance.Domain.CustomerContext.Aggregates;
 using Finance.Infra.EF.Contexts;
 using Microsoft.EntityFrameworkCore;
 

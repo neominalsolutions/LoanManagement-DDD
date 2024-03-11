@@ -1,5 +1,4 @@
-﻿using Finance.Domain.Aggregates.LoanAggregate.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finance.API.Controllers

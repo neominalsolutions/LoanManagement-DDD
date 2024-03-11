@@ -1,6 +1,8 @@
-﻿using Finance.Domain.Aggregates.AccountAggregate.Entities;
-using Finance.Domain.Aggregates.CustomerAggregate.Entities;
-using Finance.Domain.Aggregates.LoanAggregate.Entities;
+﻿using Finance.Domain.AccountContext.Aggregates.OwnerAggregate.Entities;
+using Finance.Domain.BankingContext.Aggregates.AccountAggregate.Entities;
+using Finance.Domain.CustomerContext.Aggregates;
+using Finance.Domain.LoanContext.Aggregates.LoanAggregate.Entities;
+using Finance.Infra.EF.Configurations.AccountContext;
 using Finance.Infra.EF.Configurations.BankAccountAggregate;
 using Finance.Infra.EF.Configurations.CustomerAggregate;
 using Finance.Infra.EF.Configurations.LoanAggregate;
@@ -15,14 +17,17 @@ using System.Threading.Tasks;
 
 namespace Finance.Infra.EF.Contexts
 {
-  public class FinanceContext:DbContext
+    public class FinanceContext:DbContext
   {
     private readonly IMediator mediator;
 
     public DbSet<LoanApplication> LoanApplications { get; set; }
     public DbSet<Loan> Loans { get; set; }
+    public DbSet<AccountOwner> AccountOwners { get; set; }
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<LoanCustomer> LoanCustomers { get; set; }
+
     public DbSet<Customer> Customers { get; set; }
-    public DbSet<BankAccount> Accounts { get; set; }
 
 
     public FinanceContext(DbContextOptions<FinanceContext> opt, IMediator mediator):base(opt)
@@ -32,12 +37,14 @@ namespace Finance.Infra.EF.Contexts
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-      modelBuilder.ApplyConfiguration(new BankAccountConfig());
-      modelBuilder.ApplyConfiguration(new BankAccountTransactionConfig());
+      modelBuilder.ApplyConfiguration(new AccountConfig());
+      modelBuilder.ApplyConfiguration(new AccountTransactionConfig());
       modelBuilder.ApplyConfiguration(new CustomerConfig());
       modelBuilder.ApplyConfiguration(new LoanApplicationConfig());
       modelBuilder.ApplyConfiguration(new LoanConfig());
       modelBuilder.ApplyConfiguration(new LoanDebtConfig());
+      modelBuilder.ApplyConfiguration(new LoanCustomerConfig());
+      modelBuilder.ApplyConfiguration(new AccountOwnerConfig());
 
 
       base.OnModelCreating(modelBuilder);
