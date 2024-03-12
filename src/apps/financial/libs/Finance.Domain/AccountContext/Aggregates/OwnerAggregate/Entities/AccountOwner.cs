@@ -37,9 +37,9 @@ namespace Finance.Domain.AccountContext.Aggregates.OwnerAggregate.Entities
       // Domain Event Fırlatalım
       var account = new Account(accountNumber, Id);
       _accounts.Add(account);
-      //var @event = new AccountOpened(accountNumber, Id);
-      //AddDomainEvent(@event);
-      // AccountOwner Aggregate'den Account Aggregate geçiş yapacağız.
+
+      var @event = new AccountOpened(accountNumber, Id);
+      AddDomainEvent(@event);
 
       return account;
     }

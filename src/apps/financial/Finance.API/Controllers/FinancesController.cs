@@ -37,39 +37,21 @@ namespace Finance.API.Controllers
     public IActionResult LoanRequest()
     {
 
-
-      // create loan customer
-      //var loanCustomer = new LoanCustomer(customerId: "E1811140-EA61-4712-9DD7-630C0B16BE28");
-      //loanCustomer.SetAnnualIncome(new Money(500000, "TL"));
-
-
-      //this.loanCustomerRepository.Create(loanCustomer);
-      //this.unitOfWork.Save();
-
       // loanApplication Request
 
-      // Loan Request Onay işlemi
       var loanCustomer = loanCustomerRepository.FindById("E1811140-EA61-4712-9DD7-630C0B16BE28");
 
-      var loanApplication = new LoanApplication(customerId: loanCustomer.Id,loanAmount:new Money(100000,"TL"),annualIncome: loanCustomer.AnnualIncome,loanType:LoanApplicationType.PersonalLoan,term:12 );
-
-      // Buraya Bank Customer Önceden oluşturmalıyız ki hata almalaylım
-      // LoanSubmitted da hatamız var ?
-
-
+      var loanApplication = new LoanApplication(customerId: loanCustomer.Id, loanAmount:new Money(100000,"TL"),annualIncome: loanCustomer.AnnualIncome,loanType:LoanApplicationType.PersonalLoan,term:12 );
+      // Kredi için Onay var mı ?
       loanApplication.CheckApproval(creditScoreService);
       loanApplicationRepository.Create(loanApplication);
       this.unitOfWork.Save();
 
-
-
+    
       // Approved Yapılan Loan Banka tarafından onay işlemi
-      // Kredi Kullanımı olduktan sonra artık hesaba para geçişi olacak
-      // LoanContext'den Bank Context'e işlem yapılacak.
-      //var loan = this.loanRepository.FindById(loanApplication.Id);
-      //loan.UseLoan();
-      //this.unitOfWork.Save();
-
+      var loan = this.loanRepository.FindById(loanApplication.Id);
+      loan.UseLoan();
+      this.unitOfWork.Save();
 
 
       return Ok();

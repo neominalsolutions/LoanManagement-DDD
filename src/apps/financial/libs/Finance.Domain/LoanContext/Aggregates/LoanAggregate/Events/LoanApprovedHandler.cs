@@ -37,6 +37,8 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Events
 
       this.loanRepository.Create(loan);
 
+      
+
     }
   }
 }

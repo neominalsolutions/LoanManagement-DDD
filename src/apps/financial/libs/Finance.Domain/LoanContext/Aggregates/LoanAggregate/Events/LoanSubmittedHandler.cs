@@ -5,6 +5,7 @@ using Finance.Domain.AccountContext.Aggregates.OwnerAggregate.Entities;
 using Finance.Domain.BankingContext.Aggregates.AccountAggregate.Entities;
 using Finance.Domain.BankingContext.Aggregates.AccountAggregate.Enumarations;
 using Finance.Domain.LoanContext.Aggregates.LoanAggregate.Repositories;
+using Infra.Core.Contracts;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,14 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Events
     private readonly ILoanRepository loanRepository;
     private readonly IAccountOwnerRepository accountOwnerRepository;
     private readonly IAccountRepository accountRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public LoanSubmittedHandler(ILoanRepository loanRepository, IAccountOwnerRepository accountOwnerRepository, IAccountRepository accountRepository)
+    public LoanSubmittedHandler(ILoanRepository loanRepository, IAccountOwnerRepository accountOwnerRepository, IAccountRepository accountRepository, IUnitOfWork unitOfWork)
     {
       this.loanRepository = loanRepository;
       this.accountOwnerRepository = accountOwnerRepository;
       this.accountRepository = accountRepository;
+      this.unitOfWork = unitOfWork;
     }
 
     public async Task Handle(LoanSubmitted notification, CancellationToken cancellationToken)
@@ -35,23 +38,23 @@ namespace Finance.Domain.LoanContext.Aggregates.LoanAggregate.Events
 
       string bankAccountNumber = Guid.NewGuid().ToString();
 
-  
-       var accountOwner = new AccountOwner(notification.Loan.LoanCustomerId, AccountType.Personal);
-        // banka hesap müşterisi yoksa yeniden oluşturuldu. Yeni hesap müşteriye bağlandı
-       accountOwnerRepository.Create(accountOwner);
-      
-      // müşteriye yeni hesap açılışını başlatık.
+      var accountOwner = accountOwnerRepository.Find(x => x.Id == notification.Loan.LoanCustomerId).FirstOrDefault();
+
+      if(accountOwner is null)
+      {
+        accountOwner = new AccountOwner(customerId: notification.Loan.LoanCustomerId,AccountType.Personal);
+        accountOwnerRepository.Create(accountOwner);
+      }
+
+      // müşteriye kredi hesap açılışı
       var customerAccount = accountOwner.OpenAccount(bankAccountNumber);
-      
-      //// Kredideki hesap numarasını güncelledik.
-      //notification.Loan.SetLoanAccountNumber(bankAccountNumber);
-      //this.loanRepository.Update(notification.Loan);
 
-      //// kredi tutarın hesaba geçmesini sağladık.
-      //customerAccount.IncomingTransfer(notification.Loan.PrincipalAmount, MoneyTransferChannel.Loan);
+      customerAccount.IncomingTransfer(notification.Loan.PrincipalAmount, MoneyTransferChannel.Loan);
 
-      //// Para transefer işlemi veri tabanına yansıması için state değiştirdik.
-      //this.accountRepository.Update(customerAccount);
+      // loan account number sonrasında set edildi, account aggregate'den loan aggregate geçiş.
+      var loan = loanRepository.FindById(notification.Loan.Id);
+      loan.SetLoanAccountNumber(bankAccountNumber);
+
     }
   }
 }

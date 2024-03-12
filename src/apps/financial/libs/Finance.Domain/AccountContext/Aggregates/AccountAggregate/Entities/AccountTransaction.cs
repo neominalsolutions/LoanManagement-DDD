@@ -20,8 +20,6 @@ namespace Finance.Domain.BankingContext.Aggregates.AccountAggregate.Entities
         public DateTime CreatedAt { get; init; }
         public string AccountId { get; set; }
 
-        public string Via { get; init; } // Hangi Kanal ile para aktarılmış
-
         public MoneyTransferChannel TransferChannel { get; init; }
 
         public AccountTransaction()
@@ -37,6 +35,7 @@ namespace Finance.Domain.BankingContext.Aggregates.AccountAggregate.Entities
             Type = type;
             CreatedAt = DateTime.Now;
             TransferChannel = transferChannel;
+            
         }
     }
 }
