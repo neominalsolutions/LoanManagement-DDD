@@ -7,6 +7,7 @@ using Finance.Domain.LoanContext.Aggregates.LoanAggregate.Services;
 using Finance.Domain.Shared.ValueObjects;
 using Finance.Infra.EF.Contexts;
 using Infra.Core.Contracts;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,8 +23,9 @@ namespace Finance.API.Controllers
     private readonly ILoanApplicationRepository loanApplicationRepository;
     private readonly ILoanCustomerRepository loanCustomerRepository;
     private readonly ILoanRepository loanRepository;
+    private readonly IMediator mediator;
 
-    public FinancesController(IUnitOfWork unitOfWork, CreditScoreService creditScoreService, ILoanApplicationRepository loanApplicationRepository, ILoanCustomerRepository loanCustomerRepository, ILoanRepository loanRepository)
+    public FinancesController(IUnitOfWork unitOfWork, CreditScoreService creditScoreService, ILoanApplicationRepository loanApplicationRepository, ILoanCustomerRepository loanCustomerRepository, ILoanRepository loanRepository, IMediator mediator)
     {
 
       this.creditScoreService = creditScoreService;
@@ -31,6 +33,7 @@ namespace Finance.API.Controllers
       this.loanApplicationRepository = loanApplicationRepository;
       this.loanCustomerRepository = loanCustomerRepository;
       this.loanRepository = loanRepository;
+      this.mediator = mediator;
     }
 
     [HttpPost]
@@ -45,6 +48,15 @@ namespace Finance.API.Controllers
       // Kredi için Onay var mı ?
       loanApplication.CheckApproval(creditScoreService);
       loanApplicationRepository.Create(loanApplication);
+
+      // Tüm domain eventleri manuel olarak kayıt öncesinde publish etme
+      foreach (INotification @event in loanApplication.DomainEvents)
+      {
+        this.mediator.Publish(@event);
+      }
+
+     
+      // veya save changes aşamasında EntityFramework'e bu işi devretme
       this.unitOfWork.Save();
 
     
