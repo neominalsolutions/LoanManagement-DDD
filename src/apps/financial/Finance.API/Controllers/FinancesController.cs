@@ -50,10 +50,10 @@ namespace Finance.API.Controllers
       loanApplicationRepository.Create(loanApplication);
 
       // Tüm domain eventleri manuel olarak kayıt öncesinde publish etme
-      foreach (INotification @event in loanApplication.DomainEvents)
-      {
-        this.mediator.Publish(@event);
-      }
+      //foreach (INotification @event in loanApplication.DomainEvents)
+      //{
+      //  this.mediator.Publish(@event);
+      //}
 
      
       // veya save changes aşamasında EntityFramework'e bu işi devretme

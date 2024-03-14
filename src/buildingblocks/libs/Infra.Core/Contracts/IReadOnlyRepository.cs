@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Infra.Core.Contracts
 {
-  public interface IReadOnlyRepository<TEntity, TKey>
-   where TEntity : IAggregateRoot
+  public interface IReadOnlyRepository<TRoot, TKey>
+   where TRoot : IAggregateRoot
    where TKey : IComparable
   {
 
-    TEntity FindById(TKey Id);
-    IEnumerable<TEntity> Find();
-    IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> lamda);
-    IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> lamda);
+    TRoot FindById(TKey Id);
+    IEnumerable<TRoot> Find();
+    IEnumerable<TRoot> Find(Expression<Func<TRoot, bool>> lamda);
+    IQueryable<TRoot> Query(Expression<Func<TRoot, bool>> lamda);
 
 
 

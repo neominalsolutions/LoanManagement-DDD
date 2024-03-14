@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Infra.Core.Contracts
 {
-  public interface IWriteOnlyRepository<TEntity, TKey>
-     where TEntity : IAggregateRoot
+  public interface IWriteOnlyRepository<TRoot, TKey>
+     where TRoot : IAggregateRoot
      where TKey : IComparable
   {
-    void Create(TEntity entity);
-    void Update(TEntity entity);
+    void Create(TRoot entity);
+    void Update(TRoot entity);
     void Delete(TKey Id);
   }
 }

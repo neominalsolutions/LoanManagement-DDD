@@ -17,7 +17,7 @@ namespace Finance.Domain.AccountContext.Aggregates.AccountAggregate.Enumarations
     public static AccountType Personal = new(1002, nameof(Personal));
 
     // Tüzel
-    public static AccountType Bussiness = new(1002, nameof(Bussiness));
+    public static AccountType Business = new(1002, nameof(Business));
 
 
     public AccountType(int id, string name)
